@@ -26,7 +26,7 @@ function AccordionItem({
         "group relative h-[420px] md:h-[460px] shrink-0 overflow-hidden rounded-3xl border border-border cursor-pointer",
         "bg-gradient-to-b from-zinc-50 to-white",
         "transition-[width] duration-700 ease-in-out",
-        isActive ? "w-[260px] md:w-[360px]" : "w-[64px] md:w-[72px]"
+        isActive ? "w-[200px] md:w-[280px]" : "w-[48px] md:w-[56px]"
       )}
     >
       {/* Pack */}
@@ -112,7 +112,7 @@ export function Hero() {
 
           {/* Right: accordion */}
           <div className="w-full md:w-1/2">
-            <div className="no-scrollbar flex flex-row items-center justify-center gap-3 overflow-x-auto p-2 md:gap-4">
+            <div className="no-scrollbar flex flex-row items-center justify-center gap-2 overflow-x-auto p-2 md:gap-2.5">
               {products.map((product, index) => (
                 <AccordionItem
                   key={product.id}

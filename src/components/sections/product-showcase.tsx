@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { brand, products, type Product } from "@/lib/products";
+import { brand, products } from "@/lib/products";
 import { ProductPlaceholder } from "@/components/product-placeholder";
 
 function SpecRow({ label, value }: { label: string; value: string }) {
@@ -19,34 +19,62 @@ function SpecRow({ label, value }: { label: string; value: string }) {
 }
 
 /**
- * One full-viewport product section: a persistent dark index of the whole
- * range on the left (current item highlighted, others link-jump via snap),
- * and a flip card on the right — front shows the pack, back shows the spec
- * sheet (barcode, origin, carton, size, price).
+ * A single section that handles all 5 products: a dark index on the left
+ * selects the product; the right shows a flip card (pack on the front, full
+ * spec sheet on the back). Deep links from the hero/dock (e.g. #shampoo) are
+ * honoured via the URL hash, so one section still selects any product.
  */
-export function ProductSection({
-  product,
-  index,
-}: {
-  product: Product;
-  index: number;
-}) {
+export function ProductShowcase() {
+  const [active, setActive] = useState(0);
   const [flipped, setFlipped] = useState(false);
 
+  // sync the selected product with the URL hash (#hair-mask, #shampoo, …)
+  useEffect(() => {
+    const apply = () => {
+      const id = decodeURIComponent(window.location.hash.slice(1));
+      const i = products.findIndex((p) => p.id === id);
+      if (i >= 0) {
+        setActive(i);
+        setFlipped(false);
+      }
+    };
+    apply();
+    window.addEventListener("hashchange", apply);
+    return () => window.removeEventListener("hashchange", apply);
+  }, []);
+
+  const select = (i: number) => {
+    setActive(i);
+    setFlipped(false);
+  };
+
+  const product = products[active];
+
   return (
-    <div className="mx-auto w-full max-w-7xl md:p-8">
+    <div className="relative mx-auto w-full max-w-7xl md:p-8">
+      {/* invisible scroll anchors so #hair-mask, #shampoo, … land on this section */}
+      {products.map((p) => (
+        <span
+          key={p.id}
+          id={p.id}
+          aria-hidden
+          className="pointer-events-none absolute -top-24"
+        />
+      ))}
+
       <div className="relative flex min-h-[520px] flex-col overflow-hidden rounded-[2.5rem] border border-border lg:h-[72vh] lg:max-h-[700px] lg:min-h-0 lg:flex-row lg:rounded-[3rem]">
-        {/* ── Left: dark range index ── */}
+        {/* ── Left: dark range index (selects the product) ── */}
         <div className="relative z-30 flex w-full flex-col justify-center gap-2 overflow-hidden bg-[#0a0a0a] px-8 py-10 md:px-16 lg:h-full lg:w-[40%] lg:pl-16">
           <span className="mb-4 text-[11px] font-medium uppercase tracking-[0.3em] text-white/40">
             {brand.name} {brand.line}
           </span>
           {products.map((p, i) => {
-            const isActive = p.id === product.id;
+            const isActive = i === active;
             return (
               <a
                 key={p.id}
                 href={`#${p.id}`}
+                onClick={() => select(i)}
                 className={cn(
                   "group flex items-center gap-4 rounded-full border px-6 py-3 transition-all duration-500",
                   isActive
@@ -59,7 +87,7 @@ export function ProductSection({
                     "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold transition-colors duration-500",
                     isActive ? "text-white" : "bg-white/10 text-white/50"
                   )}
-                  style={isActive ? { background: product.accent } : undefined}
+                  style={isActive ? { background: p.accent } : undefined}
                 >
                   {i + 1}
                 </span>
@@ -71,7 +99,7 @@ export function ProductSection({
           })}
         </div>
 
-        {/* ── Right: flip card ── */}
+        {/* ── Right: flip card for the selected product ── */}
         <div className="relative flex min-h-[460px] flex-1 items-center justify-center overflow-hidden border-t border-border bg-secondary px-6 py-12 md:px-12 lg:h-full lg:min-h-0 lg:border-l lg:border-t-0 lg:py-8">
           <div className="relative aspect-[4/5] w-full max-w-[420px] [perspective:1600px]">
             <button
@@ -82,12 +110,12 @@ export function ProductSection({
             >
               {/* FRONT — pack */}
               <div className="absolute inset-0 overflow-hidden rounded-[2rem] border-8 border-white bg-white [backface-visibility:hidden] md:rounded-[2.5rem]">
-                <div className="absolute inset-0 p-6">
+                <div key={product.id} className="absolute inset-0 animate-[fadeIn_0.4s_ease] p-6">
                   <ProductPlaceholder product={product} />
                 </div>
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col gap-2 p-6">
                   <div className="w-fit rounded-full border border-border bg-white px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.2em] text-foreground shadow-sm">
-                    {index + 1} • {product.name}
+                    {active + 1} • {product.name}
                   </div>
                   <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
                     Tap to see details →
