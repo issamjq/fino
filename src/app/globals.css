@@ -1,0 +1,202 @@
+@import "tailwindcss";
+
+/* ──────────────────────────────────────────────────────────────
+   Fino Premium Touch × MJQ — light theme, white & Fino rose, Inter
+   ────────────────────────────────────────────────────────────── */
+:root {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+
+  --card: #ffffff;
+  --card-foreground: #0a0a0a;
+
+  --muted: #faf2f6;
+  --muted-foreground: #6b7280;
+
+  --secondary: #fdf4f8;
+  --secondary-foreground: #0a0a0a;
+
+  /* Fino rose */
+  --primary: #c2185b;
+  --primary-foreground: #ffffff;
+
+  --border: #f0dde6;
+  --ring: #c2185b;
+
+  --radius: 0.75rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Default border color in @layer base so utilities like `border-white`
+   can still override it (unlayered rules would beat Tailwind utilities). */
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Lenis smooth scroll (recommended base styles) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+/* Hide scrollbars on horizontal scroll regions while keeping scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Blog post body — styles the sanitized rich-text HTML from the
+   editor (Tailwind's preflight resets lists/margins, so restore them).
+   ────────────────────────────────────────────────────────────── */
+.post-body > * + * {
+  margin-top: 1.15em;
+}
+.post-body p {
+  margin: 0;
+}
+.post-body strong,
+.post-body b {
+  font-weight: 700;
+}
+.post-body em,
+.post-body i {
+  font-style: italic;
+}
+.post-body u {
+  text-decoration: underline;
+}
+.post-body s,
+.post-body strike,
+.post-body del {
+  text-decoration: line-through;
+}
+.post-body a {
+  color: #c2185b; /* Fino rose */
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.post-body a:hover {
+  color: #a61049;
+}
+.post-body h1 {
+  font-size: 1.9rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-top: 1.6em;
+}
+.post-body h2 {
+  font-size: 1.55rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-top: 1.5em;
+}
+.post-body h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-top: 1.4em;
+}
+.post-body ul,
+.post-body ol {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+.post-body ul {
+  list-style: disc;
+}
+.post-body ol {
+  list-style: decimal;
+}
+.post-body li {
+  margin-top: 0.35em;
+}
+.post-body li > p {
+  margin: 0;
+}
+.post-body blockquote {
+  border-left: 3px solid var(--border);
+  padding-left: 1rem;
+  color: var(--muted-foreground);
+  font-style: italic;
+}
+.post-body code {
+  background: var(--muted);
+  border-radius: 0.4rem;
+  padding: 0.12em 0.4em;
+  font-size: 0.88em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.post-body pre {
+  background: var(--muted);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  overflow-x: auto;
+}
+.post-body pre code {
+  background: transparent;
+  padding: 0;
+}
+.post-body hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 2em 0;
+}
+.post-body img,
+.post-body video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.9rem;
+}
+.post-body iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  border: 0;
+  border-radius: 0.9rem;
+}
+.post-body figure {
+  margin: 0;
+}
+.post-body figcaption {
+  margin-top: 0.5em;
+  font-size: 0.9em;
+  color: var(--muted-foreground);
+  text-align: center;
+}
