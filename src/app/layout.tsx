@@ -14,9 +14,6 @@ export const metadata: Metadata = {
   title: "Fino Premium Touch — Hair Care by MJQ",
   description:
     "Fino Premium Touch, premium Japanese hair care distributed by MJQ. Hair Mask, Hair Oil, Shampoo and Conditioner.",
-  icons: {
-    icon: "/fino-logo.svg",
-  },
 };
 
 export default function RootLayout({
