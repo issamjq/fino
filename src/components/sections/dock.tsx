@@ -35,7 +35,7 @@ const dockItems: DockItem[] = [
   })),
 ];
 
-// Mobile only — grouped under the contact (phone) tab as an upward speed-dial
+// Grouped under the contact (phone) tab as an upward speed-dial (all screens)
 const contactItems: DockItem[] = [
   { id: "blog", name: "Blog", href: "#blog", icon: <Newspaper /> },
   { id: "email", name: "Email", href: "mailto:mk@mjqinvestment.com", icon: <Mail /> },
@@ -43,20 +43,6 @@ const contactItems: DockItem[] = [
   {
     id: "web",
     name: "Website",
-    href: "https://www.mjqinvestment.com/",
-    external: true,
-    icon: <Globe />,
-  },
-];
-
-// Desktop — the same four shown as separate icons (detailed tooltips), as before
-const desktopContactItems: DockItem[] = [
-  { id: "blog", name: "Blog", href: "#blog", icon: <Newspaper /> },
-  { id: "email", name: "mk@mjqinvestment.com", href: "mailto:mk@mjqinvestment.com", icon: <Mail /> },
-  { id: "call", name: "+971 52 288 5649", href: "tel:+971522885649", icon: <Phone /> },
-  {
-    id: "web",
-    name: "mjqinvestment.com",
     href: "https://www.mjqinvestment.com/",
     external: true,
     icon: <Globe />,
@@ -127,50 +113,7 @@ function DockIcon({ item, mouseX, dims }: { item: DockItem; mouseX: MotionValue<
   );
 }
 
-/** Desktop PDF download — a dock button (replaces the old top-right button). */
-function PdfDockIcon({
-  mouseX,
-  dims,
-  onDownload,
-  loading,
-}: {
-  mouseX: MotionValue<number>;
-  dims: Dims;
-  onDownload: () => void;
-  loading: boolean;
-}) {
-  const ref = useRef<HTMLButtonElement>(null);
-  const size = useMagnify(ref, mouseX, dims);
-  const [isHovered, setIsHovered] = useState(false);
-  const iconPx = Math.round(dims.base * 0.46);
-
-  return (
-    <motion.button
-      ref={ref}
-      type="button"
-      onClick={onDownload}
-      disabled={loading}
-      style={{ width: size, height: size }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="group relative flex aspect-square shrink-0 cursor-pointer items-center justify-center"
-      whileTap={{ scale: 0.94 }}
-    >
-      <motion.div
-        className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-2xl border border-border bg-white text-foreground shadow-sm"
-        animate={{ y: isHovered ? -8 : 0 }}
-        transition={{ type: "spring", stiffness: 400, damping: 17 }}
-      >
-        <span style={{ width: iconPx, height: iconPx }} className="[&>svg]:h-full [&>svg]:w-full">
-          {loading ? <Loader2 className="animate-spin" /> : <FileDown />}
-        </span>
-      </motion.div>
-      <Tooltip show={isHovered}>{loading ? "Preparing…" : "Download PDF"}</Tooltip>
-    </motion.button>
-  );
-}
-
-/** The contact tab (mobile): phone icon that pops an upward speed-dial. */
+/** The contact tab: phone icon that pops an upward speed-dial. */
 function ContactDock({
   mouseX,
   dims,
@@ -311,7 +254,6 @@ function ContactDock({
 export function Dock() {
   const mouseX = useMotionValue(Infinity);
   const [dims, setDims] = useState<Dims>(DESKTOP);
-  const [isMobile, setIsMobile] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
 
   const downloadPdf = async () => {
@@ -325,13 +267,11 @@ export function Dock() {
   };
 
   // Size icons so all tabs fit; shrink + drop magnify on phones. The contact
-  // group (speed-dial) is mobile-only — desktop keeps the separate icons.
+  // group (speed-dial) is used on every size now.
   useEffect(() => {
     const compute = () => {
       const vw = window.innerWidth;
-      const mobile = vw < 640;
-      setIsMobile(mobile);
-      if (!mobile) {
+      if (vw >= 640) {
         setDims(DESKTOP);
         return;
       }
@@ -361,16 +301,7 @@ export function Dock() {
         {dockItems.map((item) => (
           <DockIcon key={item.id} item={item} mouseX={mouseX} dims={dims} />
         ))}
-        {isMobile ? (
-          <ContactDock mouseX={mouseX} dims={dims} onDownload={downloadPdf} loading={pdfLoading} />
-        ) : (
-          <>
-            {desktopContactItems.map((item) => (
-              <DockIcon key={item.id} item={item} mouseX={mouseX} dims={dims} />
-            ))}
-            <PdfDockIcon mouseX={mouseX} dims={dims} onDownload={downloadPdf} loading={pdfLoading} />
-          </>
-        )}
+        <ContactDock mouseX={mouseX} dims={dims} onDownload={downloadPdf} loading={pdfLoading} />
       </motion.div>
     </div>
   );
