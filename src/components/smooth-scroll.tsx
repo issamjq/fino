@@ -24,9 +24,7 @@ const IDLE_RESET = 220;
 const SECTION_IDS = [
   "#top",
   "#brand",
-  "#puffs",
-  "#collagen",
-  "#heros",
+  "#products",
   "#blog",
   "#contact",
 ];

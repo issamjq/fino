@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { Eye } from "lucide-react";
 import { type BlogPost, formatDate } from "@/lib/blog";
 import { ShareButton } from "@/components/blog/share-button";
+import { LiveViews } from "@/components/blog/live-views";
 
 export function PostCard({ post }: { post: BlogPost }) {
   return (
@@ -39,10 +39,7 @@ export function PostCard({ post }: { post: BlogPost }) {
       </div>
 
       <div className="mt-auto flex items-center justify-between border-t border-border px-4 py-2.5">
-        <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
-          <Eye className="h-4 w-4" />
-          {post.views}
-        </span>
+        <LiveViews slug={post.slug} initialViews={post.views} />
         {/* lifted above the card link so Share stays independently clickable */}
         <div className="relative z-20">
           <ShareButton slug={post.slug} title={post.title} />
