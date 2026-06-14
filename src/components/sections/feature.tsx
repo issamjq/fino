@@ -32,19 +32,9 @@ export function Feature() {
                   className="flex flex-row items-start gap-3 group sm:gap-6"
                 >
                   <Check className="mt-1 h-4 w-4 shrink-0 text-primary" />
-                  <div className="flex flex-col gap-0.5 sm:gap-1">
-                    <p className="text-sm font-medium group-hover:underline sm:text-base">
-                      {p.name}
-                    </p>
-                    <p className="text-xs text-muted-foreground sm:text-sm">
-                      {p.size} · {p.cartonSize}/carton
-                    </p>
-                    {p.price && (
-                      <p className="text-xs font-semibold text-primary sm:text-sm">
-                        {p.price}
-                      </p>
-                    )}
-                  </div>
+                  <p className="text-sm font-medium group-hover:underline sm:text-base">
+                    {p.name}
+                  </p>
                 </a>
               ))}
             </div>
