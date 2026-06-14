@@ -5,16 +5,16 @@ import { brand, products } from "@/lib/products";
 
 export function Feature() {
   return (
-    <div id="brand" className="w-full py-12 sm:py-20 lg:py-32">
+    <div id="brand" className="w-full py-12 sm:py-20 lg:py-20">
       <div className="container mx-auto px-4">
-        <div className="container mx-auto grid grid-cols-1 items-center gap-6 rounded-2xl border border-border bg-background p-5 sm:gap-8 sm:p-8 lg:grid-cols-2">
-          <div className="flex flex-col gap-6 sm:gap-10">
+        <div className="container mx-auto grid grid-cols-1 items-center gap-6 rounded-2xl border border-border bg-background p-5 sm:gap-8 sm:p-8 lg:grid-cols-2 lg:items-stretch">
+          <div className="flex flex-col justify-center gap-6 sm:gap-8">
             <div className="flex flex-col gap-3 sm:gap-4">
               <div>
                 <Badge variant="outline">The Brand</Badge>
               </div>
               <div className="flex flex-col gap-2">
-                <h2 className="max-w-xl text-left text-2xl font-semibold tracking-tighter sm:text-3xl lg:text-5xl">
+                <h2 className="max-w-xl text-left text-2xl font-semibold tracking-tighter sm:text-3xl lg:text-4xl">
                   Premium Japanese hair care.
                 </h2>
                 <p className="max-w-xl text-left text-base leading-relaxed tracking-tight text-muted-foreground sm:text-lg">
@@ -24,7 +24,7 @@ export function Feature() {
                 </p>
               </div>
             </div>
-            <div className="grid grid-cols-2 items-start gap-x-4 gap-y-4 sm:gap-6 lg:grid-cols-1 lg:pl-6">
+            <div className="grid grid-cols-2 items-start gap-x-4 gap-y-4 sm:gap-x-8 sm:gap-y-5">
               {products.map((p) => (
                 <a
                   key={p.id}
@@ -49,7 +49,7 @@ export function Feature() {
               ))}
             </div>
           </div>
-          <div className="flex aspect-[5/3] flex-col items-center justify-center gap-4 rounded-xl bg-gradient-to-br from-[#fff0f6] to-[#fce7f0] p-6 sm:aspect-square sm:gap-6 sm:p-10">
+          <div className="flex aspect-[5/3] min-h-[240px] flex-col items-center justify-center gap-4 rounded-xl bg-gradient-to-br from-[#fff0f6] to-[#fce7f0] p-6 sm:aspect-square sm:gap-6 sm:p-10 lg:aspect-auto">
             <Image
               src="/fino-logo.svg"
               alt={`${brand.name} ${brand.line}`}
