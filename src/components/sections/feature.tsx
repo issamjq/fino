@@ -5,7 +5,7 @@ import { brand, products } from "@/lib/products";
 
 export function Feature() {
   return (
-    <div id="brand" className="w-full py-12 sm:py-20 lg:py-20">
+    <div id="brand" className="flex min-h-[100svh] w-full flex-col justify-center py-12 sm:py-16 lg:py-20">
       <div className="container mx-auto px-4">
         <div className="container mx-auto grid grid-cols-1 items-center gap-6 rounded-2xl border border-border bg-background p-5 sm:gap-8 sm:p-8 lg:grid-cols-2 lg:items-stretch">
           <div className="flex flex-col justify-center gap-6 sm:gap-8">
