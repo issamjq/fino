@@ -94,6 +94,16 @@ export function ProductShowcase() {
                 <span className="whitespace-nowrap text-sm font-medium uppercase tracking-tight md:text-[15px]">
                   {p.name}
                 </span>
+                {p.price && (
+                  <span
+                    className={cn(
+                      "ml-auto shrink-0 pl-2 text-xs font-semibold tracking-tight sm:text-sm",
+                      isActive ? "text-[#0a0a0a]" : "text-white/45"
+                    )}
+                  >
+                    {p.price}
+                  </span>
+                )}
               </a>
             );
           })}
@@ -114,8 +124,18 @@ export function ProductShowcase() {
                   <ProductPlaceholder product={product} />
                 </div>
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col gap-2 p-4 sm:p-6">
-                  <div className="w-fit rounded-full border border-border bg-white px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.2em] text-foreground shadow-sm">
-                    {active + 1} • {product.name}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <div className="w-fit rounded-full border border-border bg-white px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.2em] text-foreground shadow-sm sm:px-4 sm:text-[11px]">
+                      {active + 1} • {product.name}
+                    </div>
+                    {product.price && (
+                      <div
+                        className="w-fit rounded-full px-3 py-1.5 text-[10px] font-semibold tracking-wide text-white shadow-sm sm:text-[11px]"
+                        style={{ background: product.accent }}
+                      >
+                        {product.price}
+                      </div>
+                    )}
                   </div>
                   <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
                     Tap to see details →

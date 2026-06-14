@@ -39,6 +39,11 @@ export function Feature() {
                     <p className="text-xs text-muted-foreground sm:text-sm">
                       {p.size} · {p.cartonSize}/carton
                     </p>
+                    {p.price && (
+                      <p className="text-xs font-semibold text-primary sm:text-sm">
+                        {p.price}
+                      </p>
+                    )}
                   </div>
                 </a>
               ))}
