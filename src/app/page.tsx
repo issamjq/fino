@@ -18,7 +18,7 @@ export default function Home() {
       {/* One section handles all 5 products (pick from the left index) */}
       <section
         id="products"
-        className="flex min-h-[100svh] flex-col justify-center pt-6 pb-28 lg:pb-32"
+        className="flex min-h-[100svh] flex-col justify-center pt-6 pb-40 lg:pb-36"
       >
         <div className="container mx-auto mb-4 px-4 md:mb-6 md:px-12">
           <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">

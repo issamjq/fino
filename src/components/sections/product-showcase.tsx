@@ -7,7 +7,7 @@ import { ProductPlaceholder } from "@/components/product-placeholder";
 
 function SpecRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-baseline justify-between gap-4 border-b border-border py-1.5 last:border-b-0 sm:py-2">
+    <div className="flex items-baseline justify-between gap-4 border-b border-border py-1 last:border-b-0 sm:py-2">
       <span className="text-[9px] font-medium uppercase tracking-[0.18em] text-muted-foreground sm:text-[11px]">
         {label}
       </span>
@@ -111,7 +111,7 @@ export function ProductShowcase() {
 
         {/* ── Right: flip card for the selected product ── */}
         <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden border-t border-border bg-secondary px-6 py-5 sm:min-h-[460px] sm:py-12 md:px-12 lg:h-full lg:min-h-0 lg:border-l lg:border-t-0 lg:py-8">
-          <div className="relative aspect-square w-full max-w-[240px] [perspective:1600px] sm:max-w-[340px] lg:max-w-[440px]">
+          <div className="relative aspect-square w-full max-w-[280px] [perspective:1600px] sm:max-w-[340px] lg:max-w-[440px]">
             <button
               type="button"
               onClick={() => setFlipped((f) => !f)}
@@ -137,7 +137,7 @@ export function ProductShowcase() {
                     className="h-1.5 w-10 rounded-full sm:w-12"
                     style={{ background: product.accent }}
                   />
-                  <h3 className="mt-2 text-base font-semibold leading-tight tracking-tighter text-foreground sm:mt-3 sm:text-xl">
+                  <h3 className="mt-2 text-sm font-semibold leading-tight tracking-tighter text-foreground sm:mt-3 sm:text-xl">
                     {product.fullName}
                   </h3>
                   <p className="mt-2 hidden text-sm leading-relaxed text-muted-foreground sm:line-clamp-2 sm:block">
