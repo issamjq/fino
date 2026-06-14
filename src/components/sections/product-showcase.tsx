@@ -7,7 +7,7 @@ import { ProductPlaceholder } from "@/components/product-placeholder";
 
 function SpecRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-baseline justify-between gap-4 border-b border-border py-1.5 last:border-b-0 sm:py-3">
+    <div className="flex items-baseline justify-between gap-4 border-b border-border py-1.5 last:border-b-0 sm:py-2">
       <span className="text-[9px] font-medium uppercase tracking-[0.18em] text-muted-foreground sm:text-[11px]">
         {label}
       </span>
@@ -111,7 +111,7 @@ export function ProductShowcase() {
 
         {/* ── Right: flip card for the selected product ── */}
         <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden border-t border-border bg-secondary px-6 py-5 sm:min-h-[460px] sm:py-12 md:px-12 lg:h-full lg:min-h-0 lg:border-l lg:border-t-0 lg:py-8">
-          <div className="relative aspect-[4/5] w-full max-w-[190px] [perspective:1600px] sm:max-w-[360px] lg:max-w-[420px]">
+          <div className="relative aspect-square w-full max-w-[240px] [perspective:1600px] sm:max-w-[340px] lg:max-w-[440px]">
             <button
               type="button"
               onClick={() => setFlipped((f) => !f)}
@@ -120,27 +120,11 @@ export function ProductShowcase() {
             >
               {/* FRONT — pack */}
               <div className="absolute inset-0 overflow-hidden rounded-[1.5rem] border-4 border-white bg-white [backface-visibility:hidden] sm:rounded-[2rem] sm:border-8 md:rounded-[2.5rem]">
-                <div key={product.id} className="absolute inset-0 animate-[fadeIn_0.4s_ease] p-4 sm:p-6">
+                <div key={product.id} className="absolute inset-0 animate-[fadeIn_0.4s_ease] p-5 pb-10 sm:p-8 sm:pb-14">
                   <ProductPlaceholder product={product} />
                 </div>
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col gap-2 p-4 sm:p-6">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <div className="w-fit rounded-full border border-border bg-white px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.2em] text-foreground shadow-sm sm:px-4 sm:text-[11px]">
-                      {active + 1} • {product.name}
-                    </div>
-                    {product.price && (
-                      <div
-                        className="w-fit rounded-full px-3 py-1.5 text-[10px] font-semibold tracking-wide text-white shadow-sm sm:text-[11px]"
-                        style={{ background: product.accent }}
-                      >
-                        {product.price}
-                      </div>
-                    )}
-                    <div className="w-fit rounded-full border border-border bg-white/90 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground shadow-sm sm:text-[11px]">
-                      {product.cartonSize}/carton
-                    </div>
-                  </div>
-                  <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 p-4 sm:p-6">
+                  <p className="text-center text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground sm:text-xs">
                     {product.size} · tap for details →
                   </p>
                 </div>
@@ -148,15 +132,15 @@ export function ProductShowcase() {
 
               {/* BACK — spec sheet */}
               <div className="absolute inset-0 overflow-hidden rounded-[1.5rem] border-4 border-white bg-white [backface-visibility:hidden] [transform:rotateY(180deg)] sm:rounded-[2rem] sm:border-8 md:rounded-[2.5rem]">
-                <div className="flex h-full flex-col p-4 sm:p-7">
+                <div className="flex h-full flex-col p-4 sm:p-6">
                   <span
                     className="h-1.5 w-10 rounded-full sm:w-12"
                     style={{ background: product.accent }}
                   />
-                  <h3 className="mt-3 text-lg font-semibold leading-tight tracking-tighter text-foreground sm:mt-4 sm:text-2xl">
+                  <h3 className="mt-2 text-base font-semibold leading-tight tracking-tighter text-foreground sm:mt-3 sm:text-xl">
                     {product.fullName}
                   </h3>
-                  <p className="mt-2 hidden text-sm leading-relaxed text-muted-foreground sm:block">
+                  <p className="mt-2 hidden text-sm leading-relaxed text-muted-foreground sm:line-clamp-2 sm:block">
                     {product.tagline}
                   </p>
                   <div className="mt-2 flex flex-1 flex-col justify-center sm:mt-3">
