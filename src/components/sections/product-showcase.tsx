@@ -7,11 +7,11 @@ import { ProductPlaceholder } from "@/components/product-placeholder";
 
 function SpecRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-baseline justify-between gap-4 border-b border-border py-3 last:border-b-0">
-      <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+    <div className="flex items-baseline justify-between gap-4 border-b border-border py-1.5 last:border-b-0 sm:py-3">
+      <span className="text-[9px] font-medium uppercase tracking-[0.18em] text-muted-foreground sm:text-[11px]">
         {label}
       </span>
-      <span className="text-right text-sm font-semibold tracking-tight text-foreground">
+      <span className="text-right text-xs font-semibold tracking-tight text-foreground sm:text-sm">
         {value}
       </span>
     </div>
@@ -62,10 +62,10 @@ export function ProductShowcase() {
         />
       ))}
 
-      <div className="relative flex min-h-[480px] flex-col overflow-hidden rounded-[2rem] border border-border sm:min-h-[520px] sm:rounded-[2.5rem] lg:h-[72vh] lg:max-h-[700px] lg:min-h-0 lg:flex-row lg:rounded-[3rem]">
+      <div className="relative flex min-h-0 flex-col overflow-hidden rounded-[2rem] border border-border sm:min-h-[520px] sm:rounded-[2.5rem] lg:h-[72vh] lg:max-h-[700px] lg:min-h-0 lg:flex-row lg:rounded-[3rem]">
         {/* ── Left: Fino range index (selects the product) ── */}
-        <div className="relative z-30 flex w-full flex-col justify-center gap-2 overflow-hidden bg-gradient-to-br from-[#a8154f] to-[#5f0d29] px-6 py-8 sm:px-8 sm:py-10 md:px-16 lg:h-full lg:w-[40%] lg:pl-16">
-          <span className="mb-4 text-[11px] font-medium uppercase tracking-[0.3em] text-white/40">
+        <div className="relative z-30 flex w-full flex-col justify-center gap-1.5 overflow-hidden bg-gradient-to-br from-[#a8154f] to-[#5f0d29] px-5 py-5 sm:gap-2 sm:px-8 sm:py-10 md:px-16 lg:h-full lg:w-[40%] lg:pl-16">
+          <span className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.3em] text-white/40 sm:mb-4 sm:text-[11px]">
             {brand.name} {brand.line}
           </span>
           {products.map((p, i) => {
@@ -76,7 +76,7 @@ export function ProductShowcase() {
                 href={`#${p.id}`}
                 onClick={() => select(i)}
                 className={cn(
-                  "group flex items-center gap-3 rounded-full border px-4 py-2.5 transition-all duration-500 sm:gap-4 sm:px-6 sm:py-3",
+                  "group flex items-center gap-3 rounded-full border px-4 py-2 transition-all duration-500 sm:gap-4 sm:px-6 sm:py-3",
                   isActive
                     ? "border-white bg-white text-[#0a0a0a]"
                     : "border-white/15 bg-transparent text-white/55 hover:border-white/40 hover:text-white"
@@ -100,8 +100,8 @@ export function ProductShowcase() {
         </div>
 
         {/* ── Right: flip card for the selected product ── */}
-        <div className="relative flex min-h-[400px] flex-1 items-center justify-center overflow-hidden border-t border-border bg-secondary px-6 py-8 sm:min-h-[460px] sm:py-12 md:px-12 lg:h-full lg:min-h-0 lg:border-l lg:border-t-0 lg:py-8">
-          <div className="relative aspect-[4/5] w-full max-w-[280px] [perspective:1600px] sm:max-w-[360px] lg:max-w-[420px]">
+        <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden border-t border-border bg-secondary px-6 py-5 sm:min-h-[460px] sm:py-12 md:px-12 lg:h-full lg:min-h-0 lg:border-l lg:border-t-0 lg:py-8">
+          <div className="relative aspect-[4/5] w-full max-w-[190px] [perspective:1600px] sm:max-w-[360px] lg:max-w-[420px]">
             <button
               type="button"
               onClick={() => setFlipped((f) => !f)}
@@ -109,7 +109,7 @@ export function ProductShowcase() {
               style={{ transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}
             >
               {/* FRONT — pack */}
-              <div className="absolute inset-0 overflow-hidden rounded-[2rem] border-8 border-white bg-white [backface-visibility:hidden] md:rounded-[2.5rem]">
+              <div className="absolute inset-0 overflow-hidden rounded-[1.5rem] border-4 border-white bg-white [backface-visibility:hidden] sm:rounded-[2rem] sm:border-8 md:rounded-[2.5rem]">
                 <div key={product.id} className="absolute inset-0 animate-[fadeIn_0.4s_ease] p-4 sm:p-6">
                   <ProductPlaceholder product={product} />
                 </div>
@@ -124,7 +124,7 @@ export function ProductShowcase() {
               </div>
 
               {/* BACK — spec sheet */}
-              <div className="absolute inset-0 overflow-hidden rounded-[2rem] border-8 border-white bg-white [backface-visibility:hidden] [transform:rotateY(180deg)] md:rounded-[2.5rem]">
+              <div className="absolute inset-0 overflow-hidden rounded-[1.5rem] border-4 border-white bg-white [backface-visibility:hidden] [transform:rotateY(180deg)] sm:rounded-[2rem] sm:border-8 md:rounded-[2.5rem]">
                 <div className="flex h-full flex-col p-4 sm:p-7">
                   <span
                     className="h-1.5 w-10 rounded-full sm:w-12"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
   motion,
@@ -52,7 +52,18 @@ const dockItems: DockItem[] = [
   },
 ];
 
-function DockIcon({ item, mouseX }: { item: DockItem; mouseX: MotionValue<number> }) {
+type Dims = { base: number; max: number; gap: number; height: number };
+const DESKTOP: Dims = { base: 48, max: 78, gap: 12, height: 72 };
+
+function DockIcon({
+  item,
+  mouseX,
+  dims,
+}: {
+  item: DockItem;
+  mouseX: MotionValue<number>;
+  dims: Dims;
+}) {
   const ref = useRef<HTMLAnchorElement>(null);
 
   const distance = useTransform(mouseX, (val) => {
@@ -60,12 +71,13 @@ function DockIcon({ item, mouseX }: { item: DockItem; mouseX: MotionValue<number
     return val - bounds.x - bounds.width / 2;
   });
 
-  const widthSync = useTransform(distance, [-150, 0, 150], [48, 78, 48]);
-  const width = useSpring(widthSync, { mass: 0.1, stiffness: 150, damping: 12 });
-  const heightSync = useTransform(distance, [-150, 0, 150], [48, 78, 48]);
-  const height = useSpring(heightSync, { mass: 0.1, stiffness: 150, damping: 12 });
+  const sizeSync = useTransform(distance, [-150, 0, 150], [dims.base, dims.max, dims.base]);
+  const size = useSpring(sizeSync, { mass: 0.1, stiffness: 150, damping: 12 });
 
   const [isHovered, setIsHovered] = useState(false);
+
+  const iconPx = Math.round(dims.base * 0.46);
+  const imgPad = Math.max(2, Math.round(dims.base * 0.12));
 
   return (
     <motion.a
@@ -73,7 +85,7 @@ function DockIcon({ item, mouseX }: { item: DockItem; mouseX: MotionValue<number
       href={item.href}
       target={item.external ? "_blank" : undefined}
       rel={item.external ? "noopener noreferrer" : undefined}
-      style={{ width, height }}
+      style={{ width: size, height: size }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className="group relative flex aspect-square shrink-0 cursor-pointer items-center justify-center"
@@ -90,14 +102,20 @@ function DockIcon({ item, mouseX }: { item: DockItem; mouseX: MotionValue<number
             alt={item.name}
             fill
             sizes="78px"
-            className="object-contain p-1.5"
+            className="object-contain"
+            style={{ padding: imgPad }}
           />
         ) : (
-          <span className="[&>svg]:h-5 [&>svg]:w-5">{item.icon}</span>
+          <span
+            style={{ width: iconPx, height: iconPx }}
+            className="[&>svg]:h-full [&>svg]:w-full"
+          >
+            {item.icon}
+          </span>
         )}
       </motion.div>
 
-      {/* Tooltip */}
+      {/* Tooltip (hover only — hidden on touch) */}
       <motion.div
         initial={{ opacity: 0, y: 8, scale: 0.85 }}
         animate={{
@@ -116,19 +134,45 @@ function DockIcon({ item, mouseX }: { item: DockItem; mouseX: MotionValue<number
 
 export function Dock() {
   const mouseX = useMotionValue(Infinity);
+  const [dims, setDims] = useState<Dims>(DESKTOP);
+
+  // Size the icons so all tabs fit the row. On phones we shrink the base size
+  // (and drop the hover-magnify, which is pointless on touch) so nothing
+  // overflows; on ≥640px we keep the full macOS-style magnify dock.
+  useEffect(() => {
+    const N = dockItems.length;
+    const compute = () => {
+      const vw = window.innerWidth;
+      if (vw >= 640) {
+        setDims(DESKTOP);
+        return;
+      }
+      const gap = vw < 380 ? 4 : 5;
+      const outerPad = 24; // wrapper px-3 (both sides)
+      const innerPad = 16; // pill px-2 (both sides)
+      const avail = vw - outerPad - innerPad;
+      let base = Math.floor((avail - gap * (N - 1)) / N);
+      base = Math.max(26, Math.min(base, 44));
+      setDims({ base, max: base, gap, height: base + 14 });
+    };
+    compute();
+    window.addEventListener("resize", compute);
+    return () => window.removeEventListener("resize", compute);
+  }, []);
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-5 z-50 flex justify-center px-3">
       <motion.div
         onMouseMove={(e) => mouseX.set(e.pageX)}
         onMouseLeave={() => mouseX.set(Infinity)}
-        className="no-scrollbar pointer-events-auto mx-auto flex h-[72px] max-w-full items-end gap-2 overflow-x-auto rounded-3xl border border-border bg-white/70 px-3 pb-3 shadow-xl backdrop-blur-md sm:gap-3 sm:px-4"
+        style={{ gap: dims.gap, height: dims.height }}
+        className="pointer-events-auto mx-auto flex max-w-full items-end rounded-3xl border border-border bg-white/70 px-2 pb-2 shadow-xl backdrop-blur-md sm:px-4 sm:pb-3"
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.2 }}
       >
         {dockItems.map((item) => (
-          <DockIcon key={item.id} item={item} mouseX={mouseX} />
+          <DockIcon key={item.id} item={item} mouseX={mouseX} dims={dims} />
         ))}
       </motion.div>
     </div>

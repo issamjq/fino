@@ -23,10 +23,10 @@ function AccordionItem({
       onFocus={onActivate}
       onClick={onActivate}
       className={cn(
-        "group relative h-[420px] md:h-[460px] shrink-0 overflow-hidden rounded-3xl border border-border cursor-pointer",
+        "group relative h-[300px] sm:h-[420px] md:h-[460px] shrink-0 overflow-hidden rounded-2xl sm:rounded-3xl border border-border cursor-pointer",
         "bg-gradient-to-b from-zinc-50 to-white",
         "transition-[width] duration-700 ease-in-out",
-        isActive ? "w-[200px] md:w-[280px]" : "w-[48px] md:w-[56px]"
+        isActive ? "w-[150px] sm:w-[200px] md:w-[280px]" : "w-[40px] sm:w-[48px] md:w-[56px]"
       )}
     >
       {/* Pack */}
@@ -42,7 +42,7 @@ function AccordionItem({
       {/* Size chip (active) */}
       <span
         className={cn(
-          "absolute top-5 left-5 rounded-full border border-border bg-white/80 px-3 py-1 text-[11px] font-medium uppercase tracking-wide text-foreground/60 backdrop-blur transition-opacity duration-300",
+          "absolute top-3 left-3 rounded-full border border-border bg-white/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide text-foreground/60 backdrop-blur transition-opacity duration-300 sm:top-5 sm:left-5 sm:px-3 sm:text-[11px]",
           isActive ? "opacity-100" : "opacity-0"
         )}
       >
@@ -54,8 +54,8 @@ function AccordionItem({
         className={cn(
           "absolute whitespace-nowrap font-semibold tracking-tight text-foreground transition-all duration-300 ease-in-out",
           isActive
-            ? "bottom-6 left-1/2 -translate-x-1/2 rotate-0 text-xl"
-            : "bottom-28 left-1/2 -translate-x-1/2 rotate-90 text-base text-foreground/70"
+            ? "bottom-5 left-1/2 -translate-x-1/2 rotate-0 text-base sm:bottom-6 sm:text-xl"
+            : "bottom-20 left-1/2 -translate-x-1/2 rotate-90 text-sm text-foreground/70 sm:bottom-28 sm:text-base"
         )}
       >
         {product.name}
@@ -112,7 +112,7 @@ export function Hero() {
 
           {/* Right: accordion */}
           <div className="w-full md:w-1/2">
-            <div className="no-scrollbar flex flex-row items-center justify-center gap-2 overflow-x-auto p-2 md:gap-2.5">
+            <div className="no-scrollbar flex flex-row items-center justify-center gap-1.5 overflow-x-auto p-2 sm:gap-2 md:gap-2.5">
               {products.map((product, index) => (
                 <AccordionItem
                   key={product.id}
