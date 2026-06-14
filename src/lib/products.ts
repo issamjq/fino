@@ -51,7 +51,7 @@ export const products: Product[] = [
     cartonSize: 36,
     size: "230 gm",
     accent: "#b3315f",
-    image: "/products/hair-mask.jpg",
+    image: "/products/hair-mask.webp",
   },
   {
     id: "hair-oil",
@@ -64,7 +64,7 @@ export const products: Product[] = [
     cartonSize: 36,
     size: "70 ML",
     accent: "#c2185b",
-    image: "/products/hair-oil.jpg",
+    image: "/products/hair-oil.webp",
   },
   {
     id: "shampoo",
@@ -77,7 +77,7 @@ export const products: Product[] = [
     cartonSize: 9,
     size: "550 ML",
     accent: "#a61e4d",
-    image: "/products/shampoo.jpg",
+    image: "/products/shampoo.webp",
   },
   {
     id: "conditioner",
@@ -90,7 +90,7 @@ export const products: Product[] = [
     cartonSize: 9,
     size: "550 ML",
     accent: "#c13a6a",
-    image: "/products/conditioner.jpg",
+    image: "/products/conditioner.avif",
   },
   {
     id: "hair-oil-airy",
