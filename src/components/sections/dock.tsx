@@ -34,7 +34,7 @@ const dockItems: DockItem[] = [
   })),
 ];
 
-// Grouped under the contact (phone) tab — revealed as an upward speed-dial
+// Mobile only — grouped under the contact (phone) tab as an upward speed-dial
 const contactItems: DockItem[] = [
   { id: "blog", name: "Blog", href: "#blog", icon: <Newspaper /> },
   { id: "email", name: "Email", href: "mailto:mk@mjqinvestment.com", icon: <Mail /> },
@@ -42,6 +42,20 @@ const contactItems: DockItem[] = [
   {
     id: "web",
     name: "Website",
+    href: "https://www.mjqinvestment.com/",
+    external: true,
+    icon: <Globe />,
+  },
+];
+
+// Desktop — the same four shown as separate icons (detailed tooltips), as before
+const desktopContactItems: DockItem[] = [
+  { id: "blog", name: "Blog", href: "#blog", icon: <Newspaper /> },
+  { id: "email", name: "mk@mjqinvestment.com", href: "mailto:mk@mjqinvestment.com", icon: <Mail /> },
+  { id: "call", name: "+971 52 288 5649", href: "tel:+971522885649", icon: <Phone /> },
+  {
+    id: "web",
+    name: "mjqinvestment.com",
     href: "https://www.mjqinvestment.com/",
     external: true,
     icon: <Globe />,
@@ -213,16 +227,20 @@ function ContactDock({ mouseX, dims }: { mouseX: MotionValue<number>; dims: Dims
 export function Dock() {
   const mouseX = useMotionValue(Infinity);
   const [dims, setDims] = useState<Dims>(DESKTOP);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Size icons so all tabs fit; shrink + drop magnify on phones.
+  // Size icons so all tabs fit; shrink + drop magnify on phones. The contact
+  // group (speed-dial) is mobile-only — desktop keeps the separate icons.
   useEffect(() => {
-    const N = dockItems.length + 1; // + contact tab
     const compute = () => {
       const vw = window.innerWidth;
-      if (vw >= 640) {
+      const mobile = vw < 640;
+      setIsMobile(mobile);
+      if (!mobile) {
         setDims(DESKTOP);
         return;
       }
+      const N = dockItems.length + 1; // 6 links + the contact tab
       const gap = vw < 380 ? 5 : 6;
       const avail = vw - 24 - 16; // wrapper px-3 + pill px-2
       let base = Math.floor((avail - gap * (N - 1)) / N);
@@ -248,7 +266,13 @@ export function Dock() {
         {dockItems.map((item) => (
           <DockIcon key={item.id} item={item} mouseX={mouseX} dims={dims} />
         ))}
-        <ContactDock mouseX={mouseX} dims={dims} />
+        {isMobile ? (
+          <ContactDock mouseX={mouseX} dims={dims} />
+        ) : (
+          desktopContactItems.map((item) => (
+            <DockIcon key={item.id} item={item} mouseX={mouseX} dims={dims} />
+          ))
+        )}
       </motion.div>
     </div>
   );
