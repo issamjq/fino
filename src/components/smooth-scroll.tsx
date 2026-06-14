@@ -43,6 +43,14 @@ export function SmoothScroll() {
       wheelMultiplier: 0.9,
     });
 
+    // Start each route at the top — Lenis otherwise inherits the previous
+    // page's scroll position, so opening a blog post would land mid-page.
+    // Skip when deep-linking to an anchor (e.g. /#products) so those still work.
+    if (!window.location.hash) {
+      window.scrollTo(0, 0);
+      lenis.scrollTo(0, { immediate: true });
+    }
+
     let raf = 0;
     const loop = (time: number) => {
       lenis.raf(time);
