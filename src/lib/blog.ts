@@ -1,15 +1,13 @@
 /**
  * Blog content for the catalog.
  *
- * Source of truth is the mjqapp manager (Neon DB) exposed via a key-protected
- * read API. We fetch it server-side with ISR. If the API isn't configured yet
- * (env vars unset) or is unreachable, we fall back to the bundled DUMMY posts
- * so the site always renders.
- *
- * Env (server-only — never NEXT_PUBLIC):
- *   MJQAPP_API_URL  base url of the manager app, e.g. https://mjqapp.vercel.app
- *   MJQAPP_READ_KEY shared read key (matches mjqapp's FINO_READ_KEY)
+ * Posts are HARDCODED — bundled from ./blog-posts.json, a snapshot of the
+ * published Fino posts exported from the mjqapp manager. To update the blog,
+ * re-export the JSON (see the mjqapp read API: /api/posts?brand=fino) and
+ * commit it. Bodies are rich HTML, rendered via render-post.ts.
  */
+
+import postsData from "./blog-posts.json";
 
 export type BlogPost = {
   slug: string;
@@ -26,116 +24,19 @@ export type BlogPost = {
   date: string;
 };
 
-const API_BASE = process.env.MJQAPP_API_URL;
-const READ_KEY = process.env.MJQAPP_READ_KEY;
-// which company's posts this catalog shows (mjqapp groups posts by brand)
-const BRAND = process.env.MJQAPP_BRAND || "fino";
-const REVALIDATE = 30; // seconds — ISR refresh interval for the post list/cards
-
-const isApiConfigured = Boolean(API_BASE && READ_KEY);
-
-// ── dummy fallback (used until the API is wired up) ──
-const DUMMY: BlogPost[] = [
-  {
-    slug: "introducing-fino-premium-touch",
-    title: "Introducing Fino Premium Touch",
-    subtitle: "Premium Japanese hair care, now distributed by MJQ.",
-    cover: "/products/shampoo.jpg",
-    author: "Fino",
-    views: 128,
-    readMinutes: 2,
-    date: "2026-05-12",
-    body: "Fino Premium Touch is a premium hair-care line made in Japan, built around one idea: salon-grade results at home. Distributed across the region by MJQ, the range spans five essentials — Shampoo, Conditioner, Hair Mask and two Hair Oil serums.\n\nEvery product is formulated with a penetrating beauty serum, so each step — cleanse, condition, treat and finish — works together for smooth, lustrous hair.",
-  },
-  {
-    slug: "the-power-of-beauty-serum",
-    title: "The power of a beauty-serum mask",
-    subtitle: "Why a weekly treatment transforms damaged hair.",
-    cover: "/products/hair-mask.jpg",
-    author: "Fino",
-    views: 86,
-    readMinutes: 3,
-    date: "2026-05-26",
-    body: "Daily heat, colour and friction leave hair dry and porous. A concentrated treatment restores what styling strips away.\n\nThe Fino Premium Touch Hair Mask carries a penetrating beauty serum deep into the hair, smoothing the cuticle for soft, glossy strands. Used weekly after shampooing, it leaves hair feeling repaired from the first use.",
-  },
-  {
-    slug: "choosing-your-hair-oil",
-    title: "Rich Serum or Airy Smooth: choosing your hair oil",
-    subtitle: "Two finishes, one premium touch.",
-    cover: "/products/hair-oil-airy.webp",
-    author: "Fino",
-    views: 54,
-    readMinutes: 2,
-    date: "2026-06-02",
-    body: "Fino Premium Touch offers two hair-oil serums for different hair types and finishes.\n\nThe Rich Serum Hair Oil concentrates on repairing damage and taming frizz for a sleek, polished look. The Airy Smooth Hair Oil Serum is lightweight and weightless — perfect for fine hair that needs softness without heaviness. Both come in a 70 ML bottle.",
-  },
-];
-
-type ApiPost = {
-  slug: string;
-  title: string;
-  subtitle: string;
-  body: string;
-  coverUrl: string;
-  author: string;
-  readMinutes: number;
-  views: number;
-  date: string | null;
-};
-
-const fromApi = (p: ApiPost): BlogPost => ({
-  slug: p.slug,
-  title: p.title,
-  subtitle: p.subtitle,
-  body: p.body ?? "",
-  cover: p.coverUrl || "",
-  author: p.author || "Fino",
-  views: p.views ?? 0,
-  readMinutes: p.readMinutes ?? 1,
-  date: p.date ?? new Date(0).toISOString(),
-});
-
-async function apiFetch(path: string): Promise<Response | null> {
-  if (!isApiConfigured) return null;
-  try {
-    return await fetch(`${API_BASE}${path}`, {
-      headers: { "x-api-key": READ_KEY as string },
-      next: { revalidate: REVALIDATE, tags: ["posts"] },
-    });
-  } catch {
-    return null; // network error → caller falls back to dummy
-  }
-}
+// hardcoded posts, bundled at build time from ./blog-posts.json
+const POSTS: BlogPost[] = postsData as BlogPost[];
 
 const sortByDate = (list: BlogPost[]) =>
   [...list].sort((a, b) => (a.date < b.date ? 1 : -1));
 
 /** all published posts, newest first */
 export async function getPublishedPosts(): Promise<BlogPost[]> {
-  const res = await apiFetch(`/api/posts?brand=${encodeURIComponent(BRAND)}`);
-  if (!res || !res.ok) return sortByDate(DUMMY);
-  try {
-    const data = (await res.json()) as { posts: ApiPost[] };
-    return sortByDate((data.posts ?? []).map(fromApi));
-  } catch {
-    return sortByDate(DUMMY);
-  }
+  return sortByDate(POSTS);
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
-  if (!isApiConfigured) return DUMMY.find((p) => p.slug === slug) ?? null;
-  const res = await apiFetch(
-    `/api/posts/${encodeURIComponent(slug)}?brand=${encodeURIComponent(BRAND)}`
-  );
-  if (!res) return DUMMY.find((p) => p.slug === slug) ?? null;
-  if (res.status === 404) return null;
-  if (!res.ok) return DUMMY.find((p) => p.slug === slug) ?? null;
-  try {
-    const data = (await res.json()) as { post: ApiPost };
-    return data.post ? fromApi(data.post) : null;
-  } catch {
-    return null;
-  }
+  return POSTS.find((p) => p.slug === slug) ?? null;
 }
 
 export async function getAllSlugs(): Promise<string[]> {
