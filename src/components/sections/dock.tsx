@@ -10,9 +10,10 @@ import {
   useTransform,
   type MotionValue,
 } from "framer-motion";
-import { Home, Mail, Phone, Globe, Newspaper } from "lucide-react";
+import { Home, Mail, Phone, Globe, Newspaper, FileDown, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { products } from "@/lib/products";
+import { generateCatalogPdf } from "@/lib/generate-catalog-pdf";
 
 type DockItem = {
   id: string;
@@ -75,6 +76,19 @@ function useMagnify(ref: React.RefObject<HTMLElement | null>, mouseX: MotionValu
   return useSpring(sizeSync, { mass: 0.1, stiffness: 150, damping: 12 });
 }
 
+function Tooltip({ show, children }: { show: boolean; children: React.ReactNode }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8, scale: 0.85 }}
+      animate={{ opacity: show ? 1 : 0, y: show ? -16 : 8, scale: show ? 1 : 0.85 }}
+      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+      className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#0a0a0a] px-2.5 py-1 text-xs font-medium text-white"
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 function DockIcon({ item, mouseX, dims }: { item: DockItem; mouseX: MotionValue<number>; dims: Dims }) {
   const ref = useRef<HTMLAnchorElement>(null);
   const size = useMagnify(ref, mouseX, dims);
@@ -113,21 +127,61 @@ function DockIcon({ item, mouseX, dims }: { item: DockItem; mouseX: MotionValue<
   );
 }
 
-function Tooltip({ show, children }: { show: boolean; children: React.ReactNode }) {
+/** Desktop PDF download — a dock button (replaces the old top-right button). */
+function PdfDockIcon({
+  mouseX,
+  dims,
+  onDownload,
+  loading,
+}: {
+  mouseX: MotionValue<number>;
+  dims: Dims;
+  onDownload: () => void;
+  loading: boolean;
+}) {
+  const ref = useRef<HTMLButtonElement>(null);
+  const size = useMagnify(ref, mouseX, dims);
+  const [isHovered, setIsHovered] = useState(false);
+  const iconPx = Math.round(dims.base * 0.46);
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8, scale: 0.85 }}
-      animate={{ opacity: show ? 1 : 0, y: show ? -16 : 8, scale: show ? 1 : 0.85 }}
-      transition={{ type: "spring", stiffness: 500, damping: 30 }}
-      className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-[#0a0a0a] px-2.5 py-1 text-xs font-medium text-white"
+    <motion.button
+      ref={ref}
+      type="button"
+      onClick={onDownload}
+      disabled={loading}
+      style={{ width: size, height: size }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="group relative flex aspect-square shrink-0 cursor-pointer items-center justify-center"
+      whileTap={{ scale: 0.94 }}
     >
-      {children}
-    </motion.div>
+      <motion.div
+        className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-2xl border border-border bg-white text-foreground shadow-sm"
+        animate={{ y: isHovered ? -8 : 0 }}
+        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+      >
+        <span style={{ width: iconPx, height: iconPx }} className="[&>svg]:h-full [&>svg]:w-full">
+          {loading ? <Loader2 className="animate-spin" /> : <FileDown />}
+        </span>
+      </motion.div>
+      <Tooltip show={isHovered}>{loading ? "Preparing…" : "Download PDF"}</Tooltip>
+    </motion.button>
   );
 }
 
-/** The contact tab: a phone icon that pops an upward speed-dial of links. */
-function ContactDock({ mouseX, dims }: { mouseX: MotionValue<number>; dims: Dims }) {
+/** The contact tab (mobile): phone icon that pops an upward speed-dial. */
+function ContactDock({
+  mouseX,
+  dims,
+  onDownload,
+  loading,
+}: {
+  mouseX: MotionValue<number>;
+  dims: Dims;
+  onDownload: () => void;
+  loading: boolean;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const size = useMagnify(ref, mouseX, dims);
   const [open, setOpen] = useState(false);
@@ -149,6 +203,12 @@ function ContactDock({ mouseX, dims }: { mouseX: MotionValue<number>; dims: Dims
     };
   }, [open]);
 
+  // PDF download sits at the top of the dial, followed by the contact links
+  const dialItems: (DockItem & { pdf?: boolean })[] = [
+    { id: "pdf", name: "Download PDF", href: "#", pdf: true, icon: <FileDown /> },
+    ...contactItems,
+  ];
+
   return (
     <motion.div
       ref={ref}
@@ -164,31 +224,55 @@ function ContactDock({ mouseX, dims }: { mouseX: MotionValue<number>; dims: Dims
             exit={{ opacity: 0 }}
             className="absolute bottom-full right-0 mb-3 flex flex-col items-end gap-2.5"
           >
-            {contactItems.map((item, i) => (
-              <motion.a
-                key={item.id}
-                href={item.href}
-                target={item.external ? "_blank" : undefined}
-                rel={item.external ? "noopener noreferrer" : undefined}
-                onClick={() => setOpen(false)}
-                initial={{ opacity: 0, y: 16, scale: 0.5 }}
-                animate={{
+            {dialItems.map((item, i) => {
+              const anim = {
+                initial: { opacity: 0, y: 16, scale: 0.5 },
+                animate: {
                   opacity: 1,
                   y: 0,
                   scale: 1,
-                  transition: { delay: (contactItems.length - 1 - i) * 0.05, type: "spring", stiffness: 520, damping: 22 },
-                }}
-                exit={{ opacity: 0, y: 12, scale: 0.5, transition: { duration: 0.12 } }}
-                className="flex items-center gap-2.5"
-              >
-                <span className="whitespace-nowrap rounded-full bg-[#0a0a0a]/90 px-3 py-1 text-xs font-medium text-white shadow-md backdrop-blur">
-                  {item.name}
-                </span>
-                <span className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-white text-foreground shadow-lg transition-colors hover:border-primary hover:text-primary [&>svg]:h-[18px] [&>svg]:w-[18px]">
-                  {item.icon}
-                </span>
-              </motion.a>
-            ))}
+                  transition: { delay: (dialItems.length - 1 - i) * 0.05, type: "spring" as const, stiffness: 520, damping: 22 },
+                },
+                exit: { opacity: 0, y: 12, scale: 0.5, transition: { duration: 0.12 } },
+              };
+              const label = item.pdf && loading ? "Preparing…" : item.name;
+              const iconNode = item.pdf && loading ? <Loader2 className="animate-spin" /> : item.icon;
+              const inner = (
+                <>
+                  <span className="whitespace-nowrap rounded-full bg-[#0a0a0a]/90 px-3 py-1 text-xs font-medium text-white shadow-md backdrop-blur">
+                    {label}
+                  </span>
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-white text-foreground shadow-lg transition-colors hover:border-primary hover:text-primary [&>svg]:h-[18px] [&>svg]:w-[18px]">
+                    {iconNode}
+                  </span>
+                </>
+              );
+
+              return item.pdf ? (
+                <motion.button
+                  key={item.id}
+                  type="button"
+                  onClick={onDownload}
+                  disabled={loading}
+                  {...anim}
+                  className="flex items-center gap-2.5"
+                >
+                  {inner}
+                </motion.button>
+              ) : (
+                <motion.a
+                  key={item.id}
+                  href={item.href}
+                  target={item.external ? "_blank" : undefined}
+                  rel={item.external ? "noopener noreferrer" : undefined}
+                  onClick={() => setOpen(false)}
+                  {...anim}
+                  className="flex items-center gap-2.5"
+                >
+                  {inner}
+                </motion.a>
+              );
+            })}
           </motion.div>
         )}
       </AnimatePresence>
@@ -228,6 +312,17 @@ export function Dock() {
   const mouseX = useMotionValue(Infinity);
   const [dims, setDims] = useState<Dims>(DESKTOP);
   const [isMobile, setIsMobile] = useState(false);
+  const [pdfLoading, setPdfLoading] = useState(false);
+
+  const downloadPdf = async () => {
+    if (pdfLoading) return;
+    setPdfLoading(true);
+    try {
+      await generateCatalogPdf();
+    } finally {
+      setPdfLoading(false);
+    }
+  };
 
   // Size icons so all tabs fit; shrink + drop magnify on phones. The contact
   // group (speed-dial) is mobile-only — desktop keeps the separate icons.
@@ -267,11 +362,14 @@ export function Dock() {
           <DockIcon key={item.id} item={item} mouseX={mouseX} dims={dims} />
         ))}
         {isMobile ? (
-          <ContactDock mouseX={mouseX} dims={dims} />
+          <ContactDock mouseX={mouseX} dims={dims} onDownload={downloadPdf} loading={pdfLoading} />
         ) : (
-          desktopContactItems.map((item) => (
-            <DockIcon key={item.id} item={item} mouseX={mouseX} dims={dims} />
-          ))
+          <>
+            {desktopContactItems.map((item) => (
+              <DockIcon key={item.id} item={item} mouseX={mouseX} dims={dims} />
+            ))}
+            <PdfDockIcon mouseX={mouseX} dims={dims} onDownload={downloadPdf} loading={pdfLoading} />
+          </>
         )}
       </motion.div>
     </div>

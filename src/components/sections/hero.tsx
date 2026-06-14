@@ -5,7 +5,6 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { brand, products } from "@/lib/products";
 import { ProductPlaceholder } from "@/components/product-placeholder";
-import { DownloadPdfButton } from "@/components/sections/download-pdf-button";
 
 function AccordionItem({
   product,
@@ -72,7 +71,6 @@ export function Hero() {
       id="top"
       className="relative flex min-h-[100svh] items-center bg-background"
     >
-      <DownloadPdfButton className="absolute right-4 top-4 z-20 md:right-8 md:top-8" />
       <div className="container mx-auto px-4 py-16 md:py-24">
         <div className="flex flex-col items-center justify-between gap-12 md:flex-row md:gap-8">
           {/* Left: copy */}
