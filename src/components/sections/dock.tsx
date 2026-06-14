@@ -76,7 +76,7 @@ function DockIcon({ item, mouseX }: { item: DockItem; mouseX: MotionValue<number
       style={{ width, height }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group relative flex aspect-square cursor-pointer items-center justify-center"
+      className="group relative flex aspect-square shrink-0 cursor-pointer items-center justify-center"
       whileTap={{ scale: 0.94 }}
     >
       <motion.div
@@ -118,11 +118,11 @@ export function Dock() {
   const mouseX = useMotionValue(Infinity);
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-5 z-50 flex justify-center px-4">
+    <div className="pointer-events-none fixed inset-x-0 bottom-5 z-50 flex justify-center px-3">
       <motion.div
         onMouseMove={(e) => mouseX.set(e.pageX)}
         onMouseLeave={() => mouseX.set(Infinity)}
-        className="pointer-events-auto mx-auto flex h-[72px] items-end gap-3 rounded-3xl border border-border bg-white/70 px-4 pb-3 shadow-xl backdrop-blur-md"
+        className="no-scrollbar pointer-events-auto mx-auto flex h-[72px] max-w-full items-end gap-2 overflow-x-auto rounded-3xl border border-border bg-white/70 px-3 pb-3 shadow-xl backdrop-blur-md sm:gap-3 sm:px-4"
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.2 }}
