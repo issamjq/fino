@@ -136,9 +136,12 @@ export function ProductShowcase() {
                         {product.price}
                       </div>
                     )}
+                    <div className="w-fit rounded-full border border-border bg-white/90 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground shadow-sm sm:text-[11px]">
+                      {product.cartonSize}/carton
+                    </div>
                   </div>
                   <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                    Tap to see details →
+                    {product.size} · tap for details →
                   </p>
                 </div>
               </div>
