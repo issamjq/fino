@@ -118,16 +118,14 @@ export function ProductShowcase() {
               className="relative h-full w-full cursor-pointer rounded-[2rem] [transform-style:preserve-3d] transition-transform duration-700 md:rounded-[2.5rem]"
               style={{ transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)" }}
             >
-              {/* FRONT — pack */}
-              <div className="absolute inset-0 overflow-hidden rounded-[1.5rem] border-4 border-white bg-white [backface-visibility:hidden] sm:rounded-[2rem] sm:border-8 md:rounded-[2.5rem]">
-                <div key={product.id} className="absolute inset-0 animate-[fadeIn_0.4s_ease] p-5 pb-16 sm:p-8 sm:pb-20">
+              {/* FRONT — pack (image on top, caption below it — never overlapping) */}
+              <div className="absolute inset-0 flex flex-col overflow-hidden rounded-[1.5rem] border-4 border-white bg-white p-4 [backface-visibility:hidden] sm:rounded-[2rem] sm:border-8 sm:p-6 md:rounded-[2.5rem]">
+                <div key={product.id} className="relative min-h-0 flex-1 animate-[fadeIn_0.4s_ease]">
                   <ProductPlaceholder product={product} />
                 </div>
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 p-4 sm:p-6">
-                  <p className="text-center text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground sm:text-xs">
-                    {product.size} · tap for details →
-                  </p>
-                </div>
+                <p className="mt-3 shrink-0 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground sm:text-xs">
+                  {product.size} · tap for details →
+                </p>
               </div>
 
               {/* BACK — spec sheet */}
