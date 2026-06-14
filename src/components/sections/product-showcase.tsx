@@ -120,7 +120,7 @@ export function ProductShowcase() {
             >
               {/* FRONT — pack */}
               <div className="absolute inset-0 overflow-hidden rounded-[1.5rem] border-4 border-white bg-white [backface-visibility:hidden] sm:rounded-[2rem] sm:border-8 md:rounded-[2.5rem]">
-                <div key={product.id} className="absolute inset-0 animate-[fadeIn_0.4s_ease] p-5 pb-10 sm:p-8 sm:pb-14">
+                <div key={product.id} className="absolute inset-0 animate-[fadeIn_0.4s_ease] p-5 pb-16 sm:p-8 sm:pb-20">
                   <ProductPlaceholder product={product} />
                 </div>
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 p-4 sm:p-6">
