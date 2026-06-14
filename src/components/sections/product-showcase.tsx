@@ -62,7 +62,7 @@ export function ProductShowcase() {
         />
       ))}
 
-      <div className="relative flex min-h-0 flex-col overflow-hidden rounded-[2rem] border border-border sm:min-h-[520px] sm:rounded-[2.5rem] lg:h-[72vh] lg:max-h-[700px] lg:min-h-0 lg:flex-row lg:rounded-[3rem]">
+      <div className="relative flex min-h-0 flex-col overflow-hidden rounded-[2rem] border border-border sm:min-h-[520px] sm:rounded-[2.5rem] lg:h-[64vh] lg:max-h-[620px] lg:min-h-0 lg:flex-row lg:rounded-[3rem]">
         {/* ── Left: Fino range index (selects the product) ── */}
         <div className="relative z-30 flex w-full flex-col justify-center gap-1.5 overflow-hidden bg-gradient-to-br from-[#a8154f] to-[#5f0d29] px-5 py-5 sm:gap-2 sm:px-8 sm:py-10 md:px-16 lg:h-full lg:w-[40%] lg:pl-16">
           <span className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.3em] text-white/40 sm:mb-4 sm:text-[11px]">
