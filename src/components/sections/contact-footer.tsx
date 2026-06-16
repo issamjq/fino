@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { MapPin } from "lucide-react";
+import { MapPin, Clock } from "lucide-react";
 import { ContactForm } from "@/components/sections/contact-form";
 
 /** The shared "distributed by MJQ" contact section.
@@ -55,6 +55,18 @@ export function ContactFooter({ id }: { id?: string }) {
                 Business Bay, Dubai
               </span>
             </a>
+
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center gap-2 font-semibold text-foreground">
+                <Clock className="h-4 w-4 shrink-0" />
+                Opening Hours
+              </div>
+              <ul className="space-y-0.5 text-sm text-muted-foreground">
+                <li>Monday to Friday: 6:30 AM – 3:30 PM</li>
+                <li>Sunday: 6:30 AM – 1:00 PM</li>
+                <li>Closed on Saturdays &amp; public holidays.</li>
+              </ul>
+            </div>
           </div>
 
           {/* Right: contact form */}
