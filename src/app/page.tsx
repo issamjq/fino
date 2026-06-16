@@ -3,6 +3,7 @@ import { Feature } from "@/components/sections/feature";
 import { ProductShowcase } from "@/components/sections/product-showcase";
 import { Dock } from "@/components/sections/dock";
 import { Blog } from "@/components/sections/blog";
+import { AvailableAt } from "@/components/sections/available-at";
 import { ContactFooter } from "@/components/sections/contact-footer";
 import { brand } from "@/lib/products";
 
@@ -32,6 +33,9 @@ export default function Home() {
           <ProductShowcase />
         </div>
       </section>
+
+      {/* Available at — client/retailer logos */}
+      <AvailableAt />
 
       {/* Blog (above the footer) */}
       <Blog />

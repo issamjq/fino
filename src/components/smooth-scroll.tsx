@@ -25,6 +25,7 @@ const SECTION_IDS = [
   "#top",
   "#brand",
   "#products",
+  "#available",
   "#blog",
   "#contact",
 ];
