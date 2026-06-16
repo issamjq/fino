@@ -42,8 +42,8 @@ const contactItems: DockItem[] = [
   { id: "call", name: "Call", href: "tel:+971522885649", icon: <Phone /> },
   {
     id: "web",
-    name: "Website",
-    href: "https://www.mjqinvestment.com/",
+    name: "Distributor",
+    href: "https://www.mjqinvestment.com/contact-us",
     external: true,
     icon: <Globe />,
   },
