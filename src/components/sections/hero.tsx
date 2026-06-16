@@ -76,7 +76,7 @@ export function Hero() {
           {/* Left: copy */}
           <div className="w-full text-center md:w-1/2 md:text-left">
             <span className="inline-flex items-center rounded-full border border-border px-3 py-1 text-xs font-medium uppercase tracking-wide text-foreground/60">
-              {brand.origin} · Distributed by {brand.distributor}
+              Distributed by {brand.distributor}
             </span>
             <h1 className="mt-6">
               <Image
