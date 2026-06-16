@@ -141,7 +141,20 @@ export function ContactForm() {
                 </option>
               ))}
             </select>
-            <input id="cf-phone" name="phone" type="tel" autoComplete="tel-national" required className={`${inputClass} w-auto min-w-0 flex-1`} placeholder="50 123 4567" />
+            <input
+              id="cf-phone"
+              name="phone"
+              type="tel"
+              inputMode="numeric"
+              autoComplete="tel-national"
+              required
+              onInput={(e) => {
+                const el = e.currentTarget;
+                el.value = el.value.replace(/[^\d\s]/g, "");
+              }}
+              className={`${inputClass} w-auto min-w-0 flex-1`}
+              placeholder="50 123 4567"
+            />
           </div>
         </Field>
       </div>
