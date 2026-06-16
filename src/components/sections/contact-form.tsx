@@ -5,8 +5,11 @@ import { Loader2, Check } from "lucide-react";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
-const inputClass =
-  "w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-[0.95rem] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/15";
+// Base field styling WITHOUT a width — width is applied per-field below so
+// the conflicting w-full / flex-1 classes never collide in the phone row.
+const fieldBase =
+  "rounded-xl border border-border bg-background px-3.5 py-2.5 text-[0.95rem] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/15";
+const inputClass = `w-full ${fieldBase}`;
 
 // Country dial codes — UAE first, then the GCC/region, then other common ones.
 const COUNTRIES = [
@@ -133,7 +136,7 @@ export function ContactForm() {
               aria-label="Country code"
               value={dial}
               onChange={(e) => setDial(e.target.value)}
-              className={`${inputClass} w-auto shrink-0 pr-1`}
+              className={`${fieldBase} w-auto shrink-0 pr-1`}
             >
               {COUNTRIES.map((c) => (
                 <option key={c.code} value={c.dial}>
@@ -152,7 +155,7 @@ export function ContactForm() {
                 const el = e.currentTarget;
                 el.value = el.value.replace(/[^\d\s]/g, "");
               }}
-              className={`${inputClass} w-auto min-w-0 flex-1`}
+              className={`${fieldBase} min-w-0 flex-1`}
               placeholder="50 123 4567"
             />
           </div>
