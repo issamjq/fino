@@ -8,6 +8,48 @@ type Status = "idle" | "sending" | "sent" | "error";
 const inputClass =
   "w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-[0.95rem] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/15";
 
+// Country dial codes — UAE first, then the GCC/region, then other common ones.
+const COUNTRIES = [
+  { code: "AE", flag: "🇦🇪", dial: "+971", name: "United Arab Emirates" },
+  { code: "SA", flag: "🇸🇦", dial: "+966", name: "Saudi Arabia" },
+  { code: "QA", flag: "🇶🇦", dial: "+974", name: "Qatar" },
+  { code: "KW", flag: "🇰🇼", dial: "+965", name: "Kuwait" },
+  { code: "BH", flag: "🇧🇭", dial: "+973", name: "Bahrain" },
+  { code: "OM", flag: "🇴🇲", dial: "+968", name: "Oman" },
+  { code: "EG", flag: "🇪🇬", dial: "+20", name: "Egypt" },
+  { code: "JO", flag: "🇯🇴", dial: "+962", name: "Jordan" },
+  { code: "LB", flag: "🇱🇧", dial: "+961", name: "Lebanon" },
+  { code: "IQ", flag: "🇮🇶", dial: "+964", name: "Iraq" },
+  { code: "SY", flag: "🇸🇾", dial: "+963", name: "Syria" },
+  { code: "YE", flag: "🇾🇪", dial: "+967", name: "Yemen" },
+  { code: "PS", flag: "🇵🇸", dial: "+970", name: "Palestine" },
+  { code: "IN", flag: "🇮🇳", dial: "+91", name: "India" },
+  { code: "PK", flag: "🇵🇰", dial: "+92", name: "Pakistan" },
+  { code: "BD", flag: "🇧🇩", dial: "+880", name: "Bangladesh" },
+  { code: "LK", flag: "🇱🇰", dial: "+94", name: "Sri Lanka" },
+  { code: "PH", flag: "🇵🇭", dial: "+63", name: "Philippines" },
+  { code: "ID", flag: "🇮🇩", dial: "+62", name: "Indonesia" },
+  { code: "TR", flag: "🇹🇷", dial: "+90", name: "Türkiye" },
+  { code: "IR", flag: "🇮🇷", dial: "+98", name: "Iran" },
+  { code: "GB", flag: "🇬🇧", dial: "+44", name: "United Kingdom" },
+  { code: "US", flag: "🇺🇸", dial: "+1", name: "United States" },
+  { code: "CA", flag: "🇨🇦", dial: "+1", name: "Canada" },
+  { code: "FR", flag: "🇫🇷", dial: "+33", name: "France" },
+  { code: "DE", flag: "🇩🇪", dial: "+49", name: "Germany" },
+  { code: "IT", flag: "🇮🇹", dial: "+39", name: "Italy" },
+  { code: "ES", flag: "🇪🇸", dial: "+34", name: "Spain" },
+  { code: "NL", flag: "🇳🇱", dial: "+31", name: "Netherlands" },
+  { code: "RU", flag: "🇷🇺", dial: "+7", name: "Russia" },
+  { code: "CN", flag: "🇨🇳", dial: "+86", name: "China" },
+  { code: "JP", flag: "🇯🇵", dial: "+81", name: "Japan" },
+  { code: "AU", flag: "🇦🇺", dial: "+61", name: "Australia" },
+  { code: "ZA", flag: "🇿🇦", dial: "+27", name: "South Africa" },
+  { code: "NG", flag: "🇳🇬", dial: "+234", name: "Nigeria" },
+  { code: "MA", flag: "🇲🇦", dial: "+212", name: "Morocco" },
+  { code: "DZ", flag: "🇩🇿", dial: "+213", name: "Algeria" },
+  { code: "TN", flag: "🇹🇳", dial: "+216", name: "Tunisia" },
+];
+
 /**
  * Contact-us form. Posts to the catalog's /api/contact route, which forwards
  * the submission to the mjqapp manager (stored under this brand).
@@ -15,6 +57,7 @@ const inputClass =
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
+  const [dial, setDial] = useState(COUNTRIES[0].dial);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -22,16 +65,17 @@ export function ContactForm() {
 
     const form = e.currentTarget;
     const data = new FormData(form);
+    const localPhone = String(data.get("phone") || "").trim();
     const payload = {
       name: String(data.get("name") || "").trim(),
       email: String(data.get("email") || "").trim(),
-      phone: String(data.get("phone") || "").trim(),
+      phone: localPhone ? `${dial} ${localPhone}` : "",
       message: String(data.get("message") || "").trim(),
     };
 
-    if (!payload.name || !payload.email || !payload.message) {
+    if (!payload.name || !payload.email || !payload.phone || !payload.message) {
       setStatus("error");
-      setError("Please fill in your name, email and message.");
+      setError("Please fill in all fields.");
       return;
     }
 
@@ -46,6 +90,7 @@ export function ContactForm() {
       if (!res.ok) throw new Error("Failed");
       setStatus("sent");
       form.reset();
+      setDial(COUNTRIES[0].dial);
     } catch {
       setStatus("error");
       setError("Something went wrong. Please try again or email us directly.");
@@ -83,7 +128,21 @@ export function ContactForm() {
           <input id="cf-name" name="name" type="text" autoComplete="name" required className={inputClass} placeholder="Your name" />
         </Field>
         <Field label="Phone" htmlFor="cf-phone">
-          <input id="cf-phone" name="phone" type="tel" autoComplete="tel" className={inputClass} placeholder="+971 …" />
+          <div className="flex gap-2">
+            <select
+              aria-label="Country code"
+              value={dial}
+              onChange={(e) => setDial(e.target.value)}
+              className={`${inputClass} w-auto shrink-0 pr-1`}
+            >
+              {COUNTRIES.map((c) => (
+                <option key={c.code} value={c.dial}>
+                  {c.flag} {c.dial}
+                </option>
+              ))}
+            </select>
+            <input id="cf-phone" name="phone" type="tel" autoComplete="tel-national" required className={inputClass} placeholder="50 123 4567" />
+          </div>
         </Field>
       </div>
       <Field label="Email" htmlFor="cf-email">
