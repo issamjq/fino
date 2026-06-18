@@ -34,9 +34,16 @@ export function SmoothScroll() {
   const pathname = usePathname();
 
   useEffect(() => {
-    // the section gate only applies on the homepage; other routes (e.g. blog
-    // posts) get free smooth scroll with no boundary sticking
-    const gateEnabled = pathname === "/";
+    const isCoarse =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(pointer: coarse)").matches;
+
+    // the section gate only applies on the homepage AND on pointer-precise
+    // (mouse) devices; other routes (e.g. blog posts) get free smooth scroll.
+    // Touch devices get free native scroll: the gate's release is wheel/key-
+    // driven, so engaging it on touch would stick the page at a boundary with
+    // no way to break through.
+    const gateEnabled = pathname === "/" && !isCoarse;
 
     const lenis = new Lenis({
       smoothWheel: true,
@@ -58,10 +65,6 @@ export function SmoothScroll() {
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
-
-    const isCoarse =
-      typeof window !== "undefined" &&
-      window.matchMedia?.("(pointer: coarse)").matches;
 
     // ── boundary state ──
     let tops: number[] = [];
