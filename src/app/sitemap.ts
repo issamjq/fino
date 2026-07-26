@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getPublishedPosts } from "@/lib/blog";
-
-const BASE = "https://fino-mjq.vercel.app";
+import { SITE_URL as BASE } from "@/lib/site";
 
 export const revalidate = 300;
 

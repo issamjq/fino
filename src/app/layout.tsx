@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "@/components/smooth-scroll";
+import { SITE_URL } from "@/lib/site";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -10,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://fino-mjq.vercel.app"),
+  metadataBase: new URL(SITE_URL),
   title: "Fino Premium Touch — Hair Care by MJQ",
   description:
     "Fino Premium Touch, premium Japanese hair care distributed by MJQ. Hair Mask, Hair Oil, Shampoo and Conditioner.",
