@@ -8,13 +8,13 @@ Tailwind CSS v4 and Framer Motion.
 
 Five products, defined in [`src/lib/products.ts`](src/lib/products.ts):
 
-| # | Product | Barcode | COO | Carton | Size |
-|---|---------|---------|-----|--------|------|
-| 1 | Hair Mask | 4901872837144 | Japan | 36 | 230 gm |
-| 2 | Hair Oil | 4901872471997 | Japan | 36 | 70 ML |
-| 3 | Shampoo | 4550516475961 | Japan | 9 | 550 ML |
-| 4 | Conditioner | 4550516476074 | Japan | 9 | 550 ML |
-| 5 | Hair Oil — Airy Smooth | 4550516483836 | Japan | 36 | 70 ML |
+| # | Product | Barcode | COO | Carton | Size | Price |
+|---|---------|---------|-----|--------|------|-------|
+| 1 | Hair Mask | 4550516493583 | Japan | 36 | 230 gm | 65 AED |
+| 2 | Hair Oil | 4550516493590 | Japan | 36 | 70 ML | 79 AED |
+| 3 | Shampoo | 4550516475961 | Japan | 9 | 550 ML | 72 AED |
+| 4 | Conditioner | 4550516476074 | Japan | 9 | 550 ML | 72 AED |
+| 5 | Hair Oil — Airy Smooth | 4550516483836 | Japan | 36 | 70 ML | 79 AED |
 
 Prices are optional (`price` field) and shown as "On request" until provided.
 
